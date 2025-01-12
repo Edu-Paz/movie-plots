@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies API</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <header>
+        <h1>Movies</h1>
+    </header>
+    <div class="search-container">
+        <input 
+            type="text" 
+            placeholder="Search.." 
+            id="movieName" 
+            onkeydown="searchMovie(event)" 
+        />
+        <div id="result"></div>
+    </div>
+
+    <footer>
+        <p>© 2025 Busca de Filmes. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        async function searchMovie(event) {
+            if(event.key === "Enter"){
+                const movieName = document.getElementById("movieName").value.trim();
+                if (!movieName) {
+                    alert("Por favor, digite o nome de um filme.");
+                    return;
+                }
+                try{
+                    const response = await fetch(`/movie/search?movie=${encodeURIComponent(movieName)}`);
+
+                    const resultDiv = document.getElementById("result");
+
+
+                    if (response.ok) {
+                        const movie = await response.json();
+                        resultDiv.innerHTML = `
+                            <h2>${movie.title}</h2>
+                            <p><strong>Plot:</strong> ${movie.plot}</p>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `<p>Filme não encontrado ou erro no servidor.</p>`;
+                    }
+                }
+                catch(error){
+                    console.error("Erro na busca do filme: ", error);
+                    alert("Erro ao buscar o filme")
+                }
+            }
+        }
+    </script>
+</body>
+</html>
